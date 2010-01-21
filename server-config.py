@@ -10,7 +10,7 @@ copytree("/home/root/project-code", "/var/www/html/webserver")
 #copy("~/project-code/httpd.conf", "/etc/httpd/conf/httpd.conf")
  
 #executing commandline calls can be done with the subprocess module
-#subprocess.call(["yum -y install some-package-I-forgot-in-my-AMI",""], shell=True)
+#subprocess.call(["apachectl -k restart",""], shell=True)
  
 #make sure to start any services required for this server.
  

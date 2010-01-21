@@ -5,6 +5,7 @@ def index(req):
 	form = util.FieldStorage(req,keep_blank_values=1)
 	name = form.get("name", None)
 	if name:
+		name = name
 	else:
 		name = "World"
 	req.content_type = "text/plain"

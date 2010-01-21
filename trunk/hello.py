@@ -3,7 +3,7 @@ import cgitb
 cgitb.enable()
 
 # Required header that tells the browser how to render the text.
-print "Content-Type: text/plain\n\n"
+print "Content-Type: text/html\n\n"
 
 form = cgi.FieldStorage()
 if "name" not in form or "addr" not in form:

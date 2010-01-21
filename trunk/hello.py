@@ -1,15 +1,15 @@
-#!/usr/bin/python
-import cgitb
-cgitb.enable()
+from mod_python import apache
+from mod_python import util
 
-# Required header that tells the browser how to render the text.
-print "Content-Type: text/html\n\n"
+def index(req):
+	form = util.FieldStorage(req,keep_blank_values=1)
+	name = form.get("name", None)
+	if name:
+	else:
+		name = "World"
+	req.content_type = "text/plain"
+	req.send_http_header()
+	req.write("Hello, %s!\n"%name)
+	return apache.OK
 
-form = cgi.FieldStorage()
-if "name" not in form or "addr" not in form:
-    print "<H1>Error</H1>"
-    print "Please fill in the name and addr fields."
-    return
-print "<p>name:", form["name"].value
-print "<p>addr:", form["addr"].value
 

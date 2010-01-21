@@ -7,6 +7,7 @@ import subprocess
 #the copy and copytree methods can help you move stuff out of your expanded package to various places on the server.
  
 copytree("~/project-code", "/var/www/html/webserver")
+#copy("~/project-code/httpd.conf", "/etc/httpd/conf/httpd.conf")
  
 #executing commandline calls can be done with the subprocess module
 #subprocess.call(["yum -y install some-package-I-forgot-in-my-AMI",""], shell=True)

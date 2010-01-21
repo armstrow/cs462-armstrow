@@ -11,6 +11,6 @@ def index(req):
 	req.content_type = "text/plain"
 	req.send_http_header()
 	req.write("Hello, %s!\n"%name)
-	return apache.OK
+	return
 
 

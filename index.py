@@ -7,6 +7,11 @@ def index(req):
 	req.send_http_header()
 	return psp.PSP(req, "index.psp")
 
+def view(req):
+	req.content_type = "text/html"
+	req.send_http_header()
+	return psp.PSP(req, "view.psp")
+
 def alive(req):
 	req.content_type = "text/plain"
 	req.send_http_header()

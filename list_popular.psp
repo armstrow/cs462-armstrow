@@ -1,10 +1,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
+<% 
+from mod_python import apache
+from mod_python import util
+import jsontemplate
+import jsonutils.json as json
+import urllib
+%>
 <html>
 	<head>
 		<title>The Image Project</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-15" />
-		<link rel="stylesheet" href="/style.css" />
+		<link rel="stylesheet" href="/styles/style.css" />
 	</head>
 	<body>
 	<div id="conteneur">
@@ -36,8 +42,8 @@
 <% 
 form = util.FieldStorage(req,keep_blank_values=1)
 nextrate = form.get("nextratesort", None)
-base_url = "http://imaj.lddi.org:8010/list/recent"
-if nextdate:
+base_url = "http://imaj.lddi.org:8010/list/popular"
+if nextrate:
 	base_url = base_url + "?nextratesort=" + nextrate
 data = json.read(urllib.urlopen(base_url).read()) 
 %>
@@ -60,7 +66,7 @@ jsontemplate.expand('''
 <%
 str = jsontemplate.expand('{nextratesort}', data)
 if str != "":
-        req.write("<br/><a href=\"/list/recent?nextratesort="+str+"\">More Images ...</a>")
+        req.write("<br/><a href=\"/list/popular?nextratesort="+str+"\">More Images ...</a>")
 #
 %>
 

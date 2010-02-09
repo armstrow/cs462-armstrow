@@ -1,0 +1,5 @@
+RewriteEngine On
+RewriteRule ^([a-zA-Z0-9]+)/$ /python/index.py/
+RewriteRule ^([a-zA-Z0-9]+)/alive$ /python/index.py/alive
+
+

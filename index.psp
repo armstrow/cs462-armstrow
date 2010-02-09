@@ -1,8 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <%
-import time
-weekday = time.strftime('%A', time.localtime(time.time()))
-message = 'Hello World! This is a wonderful %s.' % weekday
-%>
-<html><body>
-<h2><%= message %></h2>
-</html></body>
+<html>
+	<head>
+		<title>The Image Project</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-15" />
+		<link rel="stylesheet" href="/style.css" />
+	</head>
+	<body>
+	<div id="conteneur">
+
+		  <div id="header">The Image Project</div>
+		  
+		  <div id="haut">
+			<ul class="menuhaut">
+				<li><a href="/">Home</a></li>
+				<li><a href="/list/popular">Popular</a></li>
+				<li><a href="/list/recent">Recent</a></li>
+
+				<li><a href="/submit">Submit</a></li>
+			</ul>
+		  </div>
+
+		  <div id="centre">
+<style>
+.thumblist {
+	clear: both;
+}	
+.thumblist a {
+		float: left;
+		margin-right: 5px;
+	}
+</style>
+
+<h1>Recent Images</h1>
+<div class="thumblist">
+<br clear="both"/>
+</div>
+<br/>
+<a href="/list/recent">See more Recent Images</a>
+<br/><br/><br/>
+
+<h1>Popular Images</h1>
+
+<div class="thumblist">
+<br clear="both"/>
+</div>
+<br/>
+<a href="/list/popular">See more Popular Images</a>
+<br/><br/><br/>
+
+<h1>About The Image Project</h1>
+<p>The Image Project is a simple website used in teaching cloud computing principles and techniques. 
+This project uses Python, EC2, SQS, SimpleDB, Cheetah, and jQuery.</p>
+
+		  </div>
+		<div id="pied">CS462 Server created by Sam. Design by <a href="http://nicolas.freezee.org">Nicolas Fafchamps</a></div>
+	</div>
+	</body>
+</html>
+

@@ -9,7 +9,7 @@ import subprocess
 #subprocess.call(["rmdr /var/www/html",""], shell=True)
 subprocess.call(["apachectl -k stop",""], shell=True)
 move("/home/root/project-code/httpd.conf", "/etc/httpd/conf")
-move("/home/root/project-code/style.css", "/var/www/styles/style.css")
+#move("/home/root/project-code/style.css", "/var/www/styles/style.css")
 subprocess.call(["apachectl -k start",""], shell=True)
 copytree("/home/root/project-code", "/var/www/python")
 #subprocess.call(["svn checkout http://simplejson.googlecode.com/svn/trunk/ simplejson-read-only",""], shell=True)

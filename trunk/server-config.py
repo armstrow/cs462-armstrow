@@ -9,15 +9,14 @@ import subprocess
 #subprocess.call(["rmdr /var/www/html",""], shell=True)
 subprocess.call(["apachectl -k stop",""], shell=True)
 move("/home/root/project-code/httpd.conf", "/etc/httpd/conf")
-#move("/home/root/project-code/style.css", "/var/www/styles/style.css")
+subprocess.call(["mkdir /var/www/styles",""], shell=True)
+move("/home/root/project-code/style.css", "/var/www/styles/style.css")
 subprocess.call(["apachectl -k start",""], shell=True)
 copytree("/home/root/project-code", "/var/www/python")
-#subprocess.call(["svn checkout http://simplejson.googlecode.com/svn/trunk/ simplejson-read-only",""], shell=True)
-#subprocess.call(["python simplejson-read-only/ez_setup.py"], shell = True);
 
  
 #executing commandline calls can be done with the subprocess module
-#subprocess.call(["apachectl -k restart",""], shell=True)
+subprocess.call(["apachectl -k restart",""], shell=True)
  
 #make sure to start any services required for this server.
  

@@ -1,8 +1,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <% 
 import jsontemplate
+import jsonply
+import jsonply.jsonply
 import urllib
- %>
+%>
 <html>
 	<head>
 		<title>The Image Project</title>
@@ -45,7 +47,7 @@ jsontemplate.expand('''
 	<a href="/view?imagekey={imagekey|htmltag}"><img src="{thumburl|htmltag}"/></a>
   {.end}
 {.end}
-''', urllib.urlopen("http://imaj.lddi.org:8010/list/recent"))
+''', jsonply.parse(urllib.urlopen("http://imaj.lddi.org:8010/list/recent").read()))
 %>
 <br clear="both"/>
 </div>

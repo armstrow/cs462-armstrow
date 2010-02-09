@@ -1,16 +1,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<% 
-from mod_python import apache
-from mod_python import util
-import jsontemplate
-import jsonutils.json as json
-import urllib
-%>
+
 <html>
 	<head>
 		<title>The Image Project</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-15" />
-		<link rel="stylesheet" href="/styles/style.css" />
+		<link rel="stylesheet" href="/style.css" />
 	</head>
 	<body>
 	<div id="conteneur">
@@ -38,15 +32,13 @@ import urllib
 }
 </style>
 
-<h1>Recent Images</h1>
+<h1>Popular Images</h1>
 <% 
 form = util.FieldStorage(req,keep_blank_values=1)
-nextdate = form.get("nextsubmitdate", None)
+nextrate = form.get("nextratesort", None)
 base_url = "http://imaj.lddi.org:8010/list/recent"
 if nextdate:
-	base_url = base_url + "?nextsubmitdate=" + nextdate
-else:
-	nextdate = ""
+	base_url = base_url + "?nextratesort=" + nextrate
 data = json.read(urllib.urlopen(base_url).read()) 
 %>
 <%=
@@ -57,6 +49,7 @@ jsontemplate.expand('''
 
 	<a href="/view?imagekey={imagekey|htmltag}"><img src="{thumburl|htmltag}"/></a>
 	<p>{description}</p><br/>
+	Rating: {rating}<br/>
 	Submitted by {submituser} on {submitdate}
 	<br clear="both"/>
 	</div>
@@ -65,9 +58,9 @@ jsontemplate.expand('''
 ''', data)
 %>
 <%
-str = jsontemplate.expand('{nextsubmitdate}', data)
+str = jsontemplate.expand('{nextratesort}', data)
 if str != "":
-        req.write("<br/><a href=\"/list/recent?nextsubmitdate="+str+"\">More Images ...</a>")
+        req.write("<br/><a href=\"/list/recent?nextratesort="+str+"\">More Images ...</a>")
 #
 %>
 

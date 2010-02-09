@@ -102,43 +102,42 @@ data = json.read(urllib.urlopen(base_url).read())
 %>
 <%=
 jsontemplate.expand('''
-{.section image}
-	<div class="imagebox">
-	<img src="http://theimageproject.s3.amazonaws.com/{imagekey|htmltag}.jpg" height="354" width="425"/>
-	</div>
-	<div class="infobox">
-	<h2>Info</h2>
-	Submitted By: {submituser} on {submitdate}<br/>
-	<h2>Description</h2>
-	<p>{description}</p>
-	<h2>Tags</h2>
-	{tag}<br/>
+<div class="imagebox">
+<img src="{imageURL|htmltag}" height="{imageheight|htmltag}" width="{imagewidth|htmltag}"
+</div>
+<div class="infobox">
+<h2>Info</h2>
+Submitted By: {submituser} on {submitdate}<br/>
+<h2>Description</h2>
+<p>{description}</p>
+<h2>Tags</h2>
+{tag}<br/>
 
-	<h2>Rating</h2>
-	<!-- http://jvance.com/TestRater.htm -->
-		<div id="imageRater" class="stat">
-		
-			<div class="statVal">
-				<span class="ui-rater">
-					<span class="ui-rater-starsOff" style="width:90px;"><span class="ui-rater-starsOn" style="width:90.0px"></span></span>
-					<span class="ui-rater-rating">{rating}</span>&#160;(<span class="ui-rater-rateCount">{ratingcount}</span>)
-				</span>
+<h2>Rating</h2>
+<!-- http://jvance.com/TestRater.htm -->
+	<div id="imageRater" class="stat">
+	
+		<div class="statVal">
+			<span class="ui-rater">
+				<span class="ui-rater-starsOff" style="width:90px;"><span class="ui-rater-starsOn" style="width:90.0px"></span></span>
+				<span class="ui-rater-rating">{rating}</span>&#160;(<span class="ui-rater-rateCount">{ratingcount}</span>)
+			</span>
 
-		    </div>
-	</div>
-	</div>
-	<br clear="both"/>
-	<div id="commentbox">
-	<h1>Comments</h1>
-	{.section comments}
-		{.repeating section @}
-			<div class="comment">
-			<p>{comment}</p>
-			- {submituser} {submitdate}
-			</div>
-		{end}
-	{end}
+	    </div>
+</div>
+</div>
+<br clear="both"/>
+<div id="commentbox">
+<h1>Comments</h1>
+{.section comments}
+	{.repeated section @}
+		<div class="comment">
+		<p>{comment}</p>
+		- {submituser} {submitdate}
+		</div>
+	{.end}
 {.end}
+
 ''', data)
 %>
 

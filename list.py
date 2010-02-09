@@ -7,3 +7,8 @@ def recent(req):
 	req.send_http_header()
 	return psp.PSP(req, "list_recent.psp")
 
+def popular(req):
+	req.content_type = "text/html"
+	req.send_http_header()
+	return psp.PSP(req, "list_popular.psp")
+

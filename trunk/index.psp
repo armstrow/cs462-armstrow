@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <% 
 import jsontemplate
-import jsonply.jsonply as jsonply
+import jsonutils.json as json
 import urllib
 %>
 <html>
@@ -39,14 +39,14 @@ import urllib
 <h1>Recent Images</h1>
 <div class="thumblist">
 
-<% 
+<%=
 jsontemplate.expand('''
 {.section images}
   {.repeated section @}
 	<a href="/view?imagekey={imagekey|htmltag}"><img src="{thumburl|htmltag}"/></a>
   {.end}
 {.end}
-''', jsonply.parse(urllib.urlopen("http://imaj.lddi.org:8010/list/recent").read()))
+''', json.read(urllib.urlopen("http://imaj.lddi.org:8010/list/recent").read()))
 %>
 <br clear="both"/>
 </div>
@@ -57,6 +57,15 @@ jsontemplate.expand('''
 <h1>Popular Images</h1>
 
 <div class="thumblist">
+<%=
+jsontemplate.expand('''
+{.section images}
+  {.repeated section @}
+	<a href="/view?imagekey={imagekey|htmltag}"><img src="{thumburl|htmltag}"/></a>
+  {.end}
+{.end}
+''', json.read(urllib.urlopen("http://imaj.lddi.org:8010/list/popular").read()))
+%>
 <br clear="both"/>
 </div>
 <br/>

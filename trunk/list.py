@@ -1,9 +1,9 @@
 from mod_python import apache
 from mod_python import util
+from mod_python import psp
 
-def index(req):
-	req.content_type = "text/plain"
+def recent(req):
+	req.content_type = "text/html"
 	req.send_http_header()
-	req.write("List!")
-	return
+	return psp.PSP(req, "list_recent.psp")
 

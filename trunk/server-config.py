@@ -11,7 +11,8 @@ subprocess.call(["apachectl -k stop",""], shell=True)
 move("/home/root/project-code/httpd.conf", "/etc/httpd/conf")
 subprocess.call(["apachectl -k start",""], shell=True)
 copytree("/home/root/project-code", "/var/www/python")
-#subprocess.call(["cp -f /home/root/project-code/httpd.conf /etc/httpd/conf/httpd.conf",""], shell=True)
+#subprocess.call(["svn checkout http://simplejson.googlecode.com/svn/trunk/ simplejson-read-only",""], shell=True)
+#subprocess.call(["python simplejson-read-only/ez_setup.py"], shell = True);
 
  
 #executing commandline calls can be done with the subprocess module

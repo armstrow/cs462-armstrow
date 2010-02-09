@@ -5,7 +5,6 @@ from mod_python import psp
 def index(req):
 	req.content_type = "text/html"
 	req.send_http_header()
-	req.write()
 	return psp.PSP(req, "index.psp")
 
 def alive(req):

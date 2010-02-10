@@ -38,7 +38,7 @@ $.fn.rater.rate = function($this, opts, rating) {
     $off.fadeTo(600, 0.4, function() {
         $.ajax({
             url: opts.postHref,
-			type: "POST",
+			type: "GET",
             data: 'id=' + opts.id + '&rating=' + rating,
             complete: function(req) {
                 if (req.status == 200) { //success

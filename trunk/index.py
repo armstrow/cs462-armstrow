@@ -9,26 +9,17 @@ import urllib
 def index(req):
 	req.content_type = "text/html"
 	req.send_http_header()
-#	req.write (psp.PSP(req, "psp/doc_head.psp"))
-	req.write (psp.PSP(req, "psp/index.psp"))
-#	req.write (psp.PSP(req, "psp/doc_foot.psp"))
-	return
+	return psp.PSP(req, "psp/index.psp")
 
 def view(req):
 	req.content_type = "text/html"
 	req.send_http_header()
-#	req.write (psp.PSP(req, "psp/doc_head.psp"))
-	req.write (psp.PSP(req, "psp/view.psp"))
-#	req.write (psp.PSP(req, "psp/doc_foot.psp"))
-	return
+	return psp.PSP(req, "psp/view.psp")
 
 def submit(req):
 	req.content_type = "text/html"
 	req.send_http_header()
-#	req.write (psp.PSP(req, "psp/doc_head.psp"))
-	req.write (psp.PSP(req, "psp/submit.psp"))
-#	req.write (psp.PSP(req, "psp/doc_foot.psp"))
-	return
+	return psp.PSP(req, "psp/submit.psp")
 
 
 def ratesubmit(req):

@@ -71,11 +71,19 @@ h2 {
 	font-size: 1.2em;
 }
 </style>
+<% 
+form = util.FieldStorage(req,keep_blank_values=1)
+imagekey = form.get("imagekey", None)
+base_url = "http://imaj.lddi.org:8010/image"
+if imagekey:
+	base_url = base_url + "?imagekey=" + imagekey
+data = json.read(urllib.urlopen(base_url).read()) 
+%>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
 <script type="text/javascript" src="/jquery.rater.js"></script>
 <script type="text/javascript">
     	$(function() {
-    		$('#imageRater').rater({ id: '2be5e964-15be-11df-9322-1231390b2957', postHref: '/ratesubmit' });
+    		$('#imageRater').rater({ id: '<% req.write(imagekey) %>', postHref: '/ratesubmit' });
     	});
 function saveComment(){
 	var commentinfo = $('#commentform').serialize();
@@ -92,14 +100,7 @@ $.postJSON = function(url, data, callback) {
 
 </script>
 
-<% 
-form = util.FieldStorage(req,keep_blank_values=1)
-imagekey = form.get("imagekey", None)
-base_url = "http://imaj.lddi.org:8010/image"
-if imagekey:
-	base_url = base_url + "?imagekey=" + imagekey
-data = json.read(urllib.urlopen(base_url).read()) 
-%>
+
 <%=
 jsontemplate.expand('''
 <div class="imagebox">
@@ -116,7 +117,7 @@ Submitted By: {submituser} on {submitdate}<br/>
 <%
 str = jsontemplate.expand('{tag}', data)
 if str[0] == '[':
-	req.write(jsontemplate.expand('{.section tag}{.repeated section @}{@},{.space}{.end}{.end}', data)[0:-1])
+	req.write(jsontemplate.expand('{.section tag}{.repeated section @}{@},{.space}{.end}{.end}', data)[0:-2])
 else:
 	req.write(str)
 #
@@ -129,34 +130,40 @@ else:
 	<div id="imageRater" class="stat">
 	
 		<div class="statVal">
-			<span class="ui-rater">
-				<%
-				rating = float(jsontemplate.expand('{rating}', data))
-				pixels = (rating / 5) * 90
-				req.write("<span class=\"ui-rater-starsOff\" style=\"width:90px;\"><span class=\"ui-rater-starsOn\" style=\"width:" + round(pixels, 1) + "px\"></span></span>")
-				req.write("<span class=\"ui-rater-rating\">" + round(rating, 2) + "</span>&#160;")
-				%>
-				(<span class=\"ui-rater-rateCount\"><%=jsontemplate.expand('{ratingcount}', data)%></span>)
-			</span>
+<%
+ratingstr = jsontemplate.expand('{rating}', data)
+rating = float(ratingstr)
+pixels = (rating / 5) * 90
+req.write("<span class=\"ui-rater\"><span class=\"ui-rater-starsOff\" style=\"width:90px;\"><span class=\"ui-rater-starsOn\" style=\"width:%2.1fpx\"></span></span>" % pixels)
+req.write("<span class=\"ui-rater-rating\">%1.2f" % rating)
+%>
+                                </span>&#160;(<span class="ui-rater-rateCount">
+<%
+req.write(jsontemplate.expand('{ratingcount}', data))
+%>
+                                </span>)
+                        </span>
+
 
 	    </div>
 </div>
 </div>
 <br clear="both"/>
 <div id="commentbox">
-<%=
-jsontemplate.expand('''
+<%
+req.write(jsontemplate.expand('''
 <h1>Comments</h1>
 {.section comments}
-	{.repeated section @}
-		<div class="comment">
-		<p>{comment}</p>
-		- {submituser} {submitdate}
-		</div>
-	{.end}
+        {.repeated section @}
+                <div class="comment">
+                <p>{comment}</p>
+                - {submituser} {submitdate}
+                </div>
+        {.end}
 {.end}
-''', data)
+''', data))
 %>
+
 
 
 <form id="commentform">

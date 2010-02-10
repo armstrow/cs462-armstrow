@@ -80,7 +80,7 @@ if imagekey:
 data = json.read(urllib.urlopen(base_url).read()) 
 %>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
-<script type="text/javascript" src="/jquery.rater.js"></script>
+<script type="text/javascript" src="/styles/jquery.rater.js"></script>
 <script type="text/javascript">
     	$(function() {
     		$('#imageRater').rater({ id: '<% req.write(imagekey) %>', postHref: '/ratesubmit' });

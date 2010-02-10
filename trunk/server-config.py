@@ -12,6 +12,7 @@ move("/home/root/project-code/httpd.conf", "/etc/httpd/conf")
 subprocess.call(["mkdir /var/www/styles",""], shell=True)
 move("/home/root/project-code/style.css", "/var/www/styles/style.css")
 move("/home/root/project-code/stars.png", "/var/www/styles/stars.png")
+move("/home/root/project-code/jquery.rater.js", "/var/www/styles/jquery.rater.js")
 subprocess.call(["apachectl -k start",""], shell=True)
 copytree("/home/root/project-code", "/var/www/python")
 

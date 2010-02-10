@@ -18,7 +18,7 @@ copytree("/home/root/project-code", "/var/www/python")
 
  
 #executing commandline calls can be done with the subprocess module
-subprocess.call(["apachectl -k restart",""], shell=True)
+subprocess.call(["apachectl graceful",""], shell=True)
  
 #make sure to start any services required for this server.
  

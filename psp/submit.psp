@@ -1,0 +1,83 @@
+
+
+<% 
+form = util.FieldStorage(req,keep_blank_values=1)
+imagekey = form.get("imagekey", None)
+base_url = "http://imaj.lddi.org:8010/image"
+if imagekey:
+	base_url = base_url + "?imagekey=" + imagekey
+data = json.read(urllib.urlopen(base_url).read()) 
+%>
+
+function saveComment(){
+	var commentinfo = $('#commentform').serialize();
+	//console.log(commentinfo);
+	$.postJSON("/commentsubmit", commentinfo, function(response){
+		//console.log("commentsubmit response", response);
+		$('#commentform').html('Your comment has been submitted for approval.');
+	});
+}
+$.postJSON = function(url, data, callback) {
+	$.post(url, data, callback, "json");
+};
+
+
+</script>
+
+
+<%=
+jsontemplate.expand('''
+<div class="imagebox">
+<img src="{imageURL|htmltag}" height="{imageheight|htmltag}" width="{imagewidth|htmltag}"
+</div>
+<div class="infobox">
+<h2>Info</h2>
+Submitted By: {submituser} on {submitdate}<br/>
+<h2>Description</h2>
+<p>{description}</p>
+''', data)
+%>
+<h2>Tags</h2>
+<%
+str = jsontemplate.expand('{tag}', data)
+if str[0] == '[':
+	req.write(jsontemplate.expand('{.section tag}{.repeated section @}{@},{.space}{.end}{.end}', data)[0:-2])
+else:
+	req.write(str)
+#
+%>
+<br/>
+
+
+</div>
+<br clear="both"/>
+<div id="commentbox">
+<%
+req.write(jsontemplate.expand('''
+<h1>Comments</h1>
+{.section comments}
+        {.repeated section @}
+                <div class="comment">
+                <p>{comment}</p>
+                - {submituser} {submitdate}
+                </div>
+        {.end}
+{.end}
+''', data))
+%>
+
+
+
+<form id="commentform">
+<%
+req.write("<input type=\"hidden\" name=\"imagekey\" value=\"" + imagekey + "\"/>")
+%>
+
+<textarea name="comment" style="width:40em;"></textarea><br/>
+Name: <input type="text" name="commentuser" value=""/>
+
+<input type="button" value="Add Comment" onclick="saveComment();"/>
+</form>
+</div>
+
+

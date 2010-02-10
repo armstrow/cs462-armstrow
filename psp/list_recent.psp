@@ -1,0 +1,45 @@
+
+.listitem {
+	margin-bottom: 2em;
+}
+.listitem a {
+	float:left;
+	margin-right: 2em;
+}
+</style>
+
+<h1>Recent Images</h1>
+<% 
+form = util.FieldStorage(req,keep_blank_values=1)
+nextdate = form.get("nextsubmitdate", None)
+base_url = "http://imaj.lddi.org:8010/list/recent"
+if nextdate:
+	base_url = base_url + "?nextsubmitdate=" + nextdate
+else:
+	nextdate = ""
+data = json.read(urllib.urlopen(base_url).read()) 
+%>
+<%=
+jsontemplate.expand('''
+{.section images}
+  {.repeated section @}
+	<div class="listitem">
+
+	<a href="/view?imagekey={imagekey|htmltag}"><img src="{thumburl|htmltag}"/></a>
+	<p>{description}</p><br/>
+	Submitted by {submituser} on {submitdate}
+	<br clear="both"/>
+	</div>
+  {.end}
+{.end}
+''', data)
+%>
+<%
+str = jsontemplate.expand('{nextsubmitdate}', data)
+if str != "":
+        req.write("<br/><a href=\"/list/recent?nextsubmitdate="+str+"\">More Images ...</a>")
+#
+%>
+
+
+

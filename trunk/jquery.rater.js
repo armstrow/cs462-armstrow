@@ -39,7 +39,6 @@ $.fn.rater.rate = function($this, opts, rating) {
         $.ajax({
             url: opts.postHref,
 			type: "GET",
-			contentType: "application/x-www-form-urlencoded",
             data: 'id=' + opts.id + '&rating=' + rating,
             complete: function(req) {
                 if (req.status == 200) { //success

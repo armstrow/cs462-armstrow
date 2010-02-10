@@ -1,0 +1,50 @@
+.thumblist {
+	clear: both;
+}	
+.thumblist a {
+		float: left;
+		margin-right: 5px;
+	}
+</style>
+
+<h1>Recent Images</h1>
+<div class="thumblist">
+
+<%=
+jsontemplate.expand('''
+{.section images}
+  {.repeated section @}
+	<a href="/view?imagekey={imagekey|htmltag}"><img src="{thumburl|htmltag}"/></a>
+  {.end}
+{.end}
+''', json.read(urllib.urlopen("http://imaj.lddi.org:8010/list/recent").read()))
+%>
+<br clear="both"/>
+</div>
+<br/>
+<a href="/list/recent">See more Recent Images</a>
+<br/><br/><br/>
+
+<h1>Popular Images</h1>
+
+<div class="thumblist">
+<%=
+jsontemplate.expand('''
+{.section images}
+  {.repeated section @}
+	<a href="/view?imagekey={imagekey|htmltag}"><img src="{thumburl|htmltag}"/></a>
+  {.end}
+{.end}
+''', json.read(urllib.urlopen("http://imaj.lddi.org:8010/list/popular").read()))
+%>
+<br clear="both"/>
+</div>
+<br/>
+<a href="/list/popular">See more Popular Images</a>
+<br/><br/><br/>
+
+<h1>About The Image Project</h1>
+<p>The Image Project is a simple website used in teaching cloud computing principles and techniques. 
+This project uses Python, EC2, SQS, SimpleDB, Cheetah, and jQuery.</p>
+
+

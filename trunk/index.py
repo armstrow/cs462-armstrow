@@ -2,7 +2,7 @@ from mod_python import apache
 from mod_python import util
 from mod_python import psp
 import urllib
-import 
+import urllib2
 
 def index(req):
 	req.content_type = "text/html"
@@ -15,6 +15,10 @@ def view(req):
 	return psp.PSP(req, "view.psp")
 
 def ratesubmit(req):
+     return psp.PSP(req, "ratesubmit.psp")
+
+
+def ratesubmit2(req):
 	form = util.FieldStorage(req,keep_blank_values=1)
 	image_id = form.get("id", None)
 	new_rating = form.get("rating", None)

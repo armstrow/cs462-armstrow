@@ -32,7 +32,7 @@ import urllib
 	/* RATING */
 	.ui-rater>span {vertical-align:top;}
 	.ui-rater-rating {margin-left:.8em}
-	.ui-rater-starsOff, .ui-rater-starsOn {display:inline-block; height:18px; background:url(/stars.png) repeat-x 0 0px;}
+	.ui-rater-starsOff, .ui-rater-starsOn {display:inline-block; height:18px; background:url(/styles/stars.png) repeat-x 0 0px;}
 	.ui-rater-starsOn {display:block; max-width:90px; top:0; background-position: 0 -36px;}
 	.ui-rater-starsHover {background-position: 0 -18px!important;}
 
@@ -110,8 +110,19 @@ jsontemplate.expand('''
 Submitted By: {submituser} on {submitdate}<br/>
 <h2>Description</h2>
 <p>{description}</p>
+''', data)
+%>
 <h2>Tags</h2>
-{tag}<br/>
+<%
+str = jsontemplate.expand('{tag}', data)
+if str[0] == '[':
+	req.write(jsontemplate.expand('{.section tag}{.repeated section @}{@},{.space}{.end}{.end}', data)[0:-1])
+else:
+	req.write(str)
+#
+%>
+<br/>
+
 
 <h2>Rating</h2>
 <!-- http://jvance.com/TestRater.htm -->
@@ -119,8 +130,13 @@ Submitted By: {submituser} on {submitdate}<br/>
 	
 		<div class="statVal">
 			<span class="ui-rater">
-				<span class="ui-rater-starsOff" style="width:90px;"><span class="ui-rater-starsOn" style="width:90.0px"></span></span>
-				<span class="ui-rater-rating">{rating}</span>&#160;(<span class="ui-rater-rateCount">{ratingcount}</span>)
+				<%
+				rating = float(jsontemplate.expand('{rating}', data))
+				pixels = (rating / 5) * 90
+				req.write("<span class=\"ui-rater-starsOff\" style=\"width:90px;\"><span class=\"ui-rater-starsOn\" style=\"width:" + round(pixels, 1) + "px\"></span></span>")
+				req.write("<span class=\"ui-rater-rating\">" + round(rating, 2) + "</span>&#160;")
+				%>
+				(<span class=\"ui-rater-rateCount\"><%=jsontemplate.expand('{ratingcount}', data)%></span>)
 			</span>
 
 	    </div>
@@ -128,6 +144,8 @@ Submitted By: {submituser} on {submitdate}<br/>
 </div>
 <br clear="both"/>
 <div id="commentbox">
+<%=
+jsontemplate.expand('''
 <h1>Comments</h1>
 {.section comments}
 	{.repeated section @}
@@ -137,7 +155,6 @@ Submitted By: {submituser} on {submitdate}<br/>
 		</div>
 	{.end}
 {.end}
-
 ''', data)
 %>
 

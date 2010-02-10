@@ -14,12 +14,21 @@ def view(req):
 	req.send_http_header()
 	return psp.PSP(req, "view.psp")
 
+
+
 def ratesubmit(req):
      return psp.PSP(req, "ratesubmit.psp")
 
+def ratesubmit(req):
+    if not req.headers_in.has_key("content-type"):
+      content_type = "application/x-www-form-urlencoded"
+    else:
+      content_type = req.headers_in["content-type"]
 
-def ratesubmit2(req):
-	form = util.FieldStorage(req,keep_blank_values=1)
+    if content_type == "application/x-www-form-urlencoded" or \
+        content_type[:10] == "multipart/":
+
+ 	form = util.FieldStorage(req,keep_blank_values=1)
 	image_id = form.get("id", None)
 	new_rating = form.get("rating", None)
 	values = {}
@@ -28,6 +37,7 @@ def ratesubmit2(req):
 	data = urllib.urlencode(values)
 	req = urllib2.Request("http://imaj.lddi.org:8010/ratesubmit", data)
 	response = urllib2.urlopen(req)
+	req.write(response)
 	return response
 
 def alive(req):

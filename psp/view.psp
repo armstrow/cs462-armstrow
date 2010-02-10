@@ -84,7 +84,7 @@ data = json.read(urllib.urlopen(base_url).read())
 <script type="text/javascript" src="/styles/jquery.rater.js"></script>
 <script type="text/javascript">
     	$(function() {
-    		$('#imageRater').rater({ id: '<% req.write(imagekey) %>', postHref: '/list' });
+    		$('#imageRater').rater({ id: '<% req.write(imagekey) %>', postHref: '/ratesubmit' });
     	});
 function saveComment(){
 	var commentinfo = $('#commentform').serialize();

@@ -4,7 +4,7 @@
 	<head>
 		<title>The Image Project</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-15" />
-		<link rel="stylesheet" href="/style.css" />
+		<link rel="stylesheet" href="/styles/style.css" />
 	</head>
 	<body>
 	<div id="conteneur">
@@ -51,7 +51,7 @@ if form.has_key('description'):
 %>
 
 
-<form action="/submit" method="post" enctype="multipart/form-data">
+<form action="/submit/" method="post" enctype="multipart/form-data">
 
 <input type="hidden" name="filesubmit" value="true"/>
 <label>Picture</label>

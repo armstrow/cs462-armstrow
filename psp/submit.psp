@@ -1,16 +1,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<% 
-from mod_python import apache
-from mod_python import util
-import jsontemplate
-import jsonutils.json as json
-import urllib
-%>
+
 <html>
 	<head>
 		<title>The Image Project</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-15" />
-		<link rel="stylesheet" href="/styles/style.css" />
+		<link rel="stylesheet" href="/style.css" />
 	</head>
 	<body>
 	<div id="conteneur">
@@ -29,90 +23,53 @@ import urllib
 
 		  <div id="centre">
 <style>
-
-<% 
-form = util.FieldStorage(req,keep_blank_values=1)
-imagekey = form.get("imagekey", None)
-base_url = "http://imaj.lddi.org:8010/image"
-if imagekey:
-	base_url = base_url + "?imagekey=" + imagekey
-data = json.read(urllib.urlopen(base_url).read()) 
-%>
-
-function saveComment(){
-	var commentinfo = $('#commentform').serialize();
-	//console.log(commentinfo);
-	$.postJSON("/commentsubmit", commentinfo, function(response){
-		//console.log("commentsubmit response", response);
-		$('#commentform').html('Your comment has been submitted for approval.');
-	});
+label {
+	display: block;
+	width: 8em;
+	float: left;
+	text-align: right;
+	margin-right: 0.5em;
 }
-$.postJSON = function(url, data, callback) {
-	$.post(url, data, callback, "json");
-};
+input, textarea {
+	width: 18em;
+}
+input[type="submit"] {
+	width: 8em;
+	margin-left: 7.5em;
+}
+</style>
 
+<h1>Submit Picture</h1>
 
-</script>
-
-
-<%=
-jsontemplate.expand('''
-<div class="imagebox">
-<img src="{imageURL|htmltag}" height="{imageheight|htmltag}" width="{imagewidth|htmltag}"
-</div>
-<div class="infobox">
-<h2>Info</h2>
-Submitted By: {submituser} on {submitdate}<br/>
-<h2>Description</h2>
-<p>{description}</p>
-''', data)
-%>
-<h2>Tags</h2>
 <%
-str = jsontemplate.expand('{tag}', data)
-if str[0] == '[':
-	req.write(jsontemplate.expand('{.section tag}{.repeated section @}{@},{.space}{.end}{.end}', data)[0:-2])
-else:
-	req.write(str)
+
+if form.has_key('description'):
+  req.write("<p>")
+  req.write(form['description'])
+  req.write("</p>")
 #
 %>
-<br/>
 
 
-</div>
-<br clear="both"/>
-<div id="commentbox">
-<%
-req.write(jsontemplate.expand('''
-<h1>Comments</h1>
-{.section comments}
-        {.repeated section @}
-                <div class="comment">
-                <p>{comment}</p>
-                - {submituser} {submitdate}
-                </div>
-        {.end}
-{.end}
-''', data))
+<form action="/submit" method="post" enctype="multipart/form-data">
 
-%>
+<input type="hidden" name="filesubmit" value="true"/>
+<label>Picture</label>
+<input type="file" name="image"/><br/>
+<label>Tags</label>
+<input type="text" name="tags" value=""/> (comma seperated)<br/>
+<label>Description</label>
+<textarea name="description"></textarea><br/>
+<label>Your Name</label>
+<input type="text" name="submituser" value=""/><br/>
+<input type="submit" value="Submit Picture"/>
 
-
-
-<form id="commentform">
-<%
-req.write("<input type=\"hidden\" name=\"imagekey\" value=\"" + imagekey + "\"/>")
-%>
-
-<textarea name="comment" style="width:40em;"></textarea><br/>
-Name: <input type="text" name="commentuser" value=""/>
-
-<input type="button" value="Add Comment" onclick="saveComment();"/>
 </form>
-</div>
+
 
 		  </div>
 		<div id="pied">CS462 Server created by Sam. Design by <a href="http://nicolas.freezee.org">Nicolas Fafchamps</a></div>
 	</div>
 	</body>
 </html>
+

@@ -89,13 +89,16 @@ data = json.read(urllib.urlopen(base_url).read())
 function saveComment(){
 	var commentinfo = $('#commentform').serialize();
 	//console.log(commentinfo);
-	$.postJSON("/commentsubmit", commentinfo, function(response){
+	$.getJSON("/commentsubmit", commentinfo, function(response){
 		//console.log("commentsubmit response", response);
 		$('#commentform').html('Your comment has been submitted for approval.');
 	});
 }
 $.postJSON = function(url, data, callback) {
 	$.post(url, data, callback, "json");
+};
+$.getJSON = function(url, data, callback) {
+	$.get(url, data, callback, "json");
 };
 
 

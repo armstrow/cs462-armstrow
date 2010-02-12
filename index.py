@@ -16,7 +16,7 @@ def view(req):
 	req.send_http_header()
 	return psp.PSP(req, "psp/view.psp")
 
-def submit(req):
+def submit2(req):
 	req.content_type = "text/html"
 	req.send_http_header()
 	return psp.PSP(req, "psp/submit.psp")

@@ -1,5 +1,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
+<% 
+from mod_python import apache
+from mod_python import util
+import jsontemplate
+import jsonutils.json as json
+import urllib
+%>
 <html>
 	<head>
 		<title>The Image Project</title>
@@ -53,12 +59,12 @@ if form.has_key('image') and form['image'].filename:
 	params = urllib.urlencode({'image': fileitem, 'description': description, 'submituser': submituser, 'tags': tags})
 	f = urllib.urlopen("http://imaj.lddi.org:8010/submitimage", params)
 	result = jsontemplate.expand('{success}', json.read(f.read()))
-	if result == "true"
-		req.write("Thank you for your submission!\nAfter it is reviewed, it will be posted on the website!"
-	else
-		req.write("There was an error with your submission.\nPlease try again
+	if result == "true":
+		req.write("Thank you for your submission!\nAfter it is reviewed, it will be posted on the website!")
+	else:
+		req.write("There was an error with your submission.\nPlease try again")
 	#
-else
+else:
 	#
 %>
 

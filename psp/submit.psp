@@ -41,13 +41,25 @@ input[type="submit"] {
 
 <h1>Submit Picture</h1>
 
+<html><body>
 <%
-
-if form.has_key('description'):
-  req.write("<p>")
-  req.write(form['description'])
-  req.write("</p>")
-#
+ 
+if form.has_key('image') and form['image'].filename:
+	# A nested Field object holds the file
+	fileitem = form['image]
+	description = form['description']
+	submituser = form['submituser']
+	tags = form['tags']
+	params = urllib.urlencode({'image': fileitem, 'description': description, 'submituser': submituser, 'tags': tags})
+	f = urllib.urlopen("http://imaj.lddi.org:8010/submitimage", params)
+	result = jsontemplate.expand('{success}', json.read(f.read()))
+	if result == "true"
+		req.write("Thank you for your submission!\nAfter it is reviewed, it will be posted on the website!"
+	else
+		req.write("There was an error with your submission.\nPlease try again
+	#
+else
+	#
 %>
 
 
@@ -65,7 +77,9 @@ if form.has_key('description'):
 <input type="submit" value="Submit Picture"/>
 
 </form>
-
+<%
+#
+%>
 
 		  </div>
 		<div id="pied">CS462 Server created by Sam. Design by <a href="http://nicolas.freezee.org">Nicolas Fafchamps</a></div>

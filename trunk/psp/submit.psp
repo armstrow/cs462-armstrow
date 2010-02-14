@@ -49,14 +49,31 @@ input[type="submit"] {
 
 <html><body>
 <%
- 
-if form.has_key('image') and form['image'].filename:
+if form.has_key('file') and form['file'].filename:
 	# A nested Field object holds the file
-	fileitem = form['image]
+	fileitem = form['file']
 	description = form['description']
 	submituser = form['submituser']
 	tags = form['tags']
-	params = urllib.urlencode({'image': fileitem, 'description': description, 'submituser': submituser, 'tags': tags})
+
+	try: # Windows needs stdio set for binary mode.
+		import msvcrt
+		msvcrt.setmode (0, os.O_BINARY) # stdin  = 0
+		msvcrt.setmode (1, os.O_BINARY) # stdout = 1
+	except ImportError:
+		pass
+
+	# strip leading path from file name to avoid directory traversal attacks
+	fname = os.path.basename(fileitem.filename)
+
+	# build absolute path to files directory
+	dir_path = os.path.join(os.path.dirname(req.filename), 'files')
+
+	open(os.path.join(dir_path, fname), 'wb').write(fileitem.file.read())
+	#message = 'The file "%s" was uploaded successfully' % fname
+	newFile = open(os.path.join(dir_path, fname), 'r')	
+
+	params = urllib.urlencode({'image': newFile, 'description': description, 'submituser': submituser, 'tags': tags})
 	f = urllib.urlopen("http://imaj.lddi.org:8010/submitimage", params)
 	result = jsontemplate.expand('{success}', json.read(f.read()))
 	if result == "true":

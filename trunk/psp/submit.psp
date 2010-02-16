@@ -77,7 +77,7 @@ if form.has_key('image') and form['image'].filename:
 	fname = os.path.basename(fileitem.filename)
 
 	# build absolute path to files directory
-	dir_path = os.path.dirname(req.filename)
+	dir_path = os.path.join(os.path.dirname(req.filename), 'files')
 
 	open(os.path.join(dir_path, fname), 'wb').write(fileitem.file.read())
 	#message = 'The file "%s" was uploaded successfully' % fname
@@ -99,6 +99,7 @@ if form.has_key('image') and form['image'].filename:
 	result = jsontemplate.expand('{success}', response)
 	if result.lower() == "true"
 		req.write("Thank you for your submission!\nAfter it is reviewed, it will be posted on the website!")
+		os.remove(os.path.join(dir_path, fname))
 	else:
 		req.write("There was an error with your submission: " + jsontemplate.expand('{error}', response) + ".\nPlease try again")
 	#

@@ -1,11 +1,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<% 
 import sys
 sys.path.append('/var/www/python/')
 from mod_python import apache
 from mod_python import util
+import jsontemplate
+import jsonutils.json as json
 import urllib
-import file_upload
+import pycurl
+import StringIO
 %>
 <html>
 	<head>
@@ -81,27 +83,24 @@ if form.has_key('image') and form['image'].filename:
 	#message = 'The file "%s" was uploaded successfully' % fname
 	#newFile = open(os.path.join(dir_path, fname), 'r')	
 
-	#c = pycurl.Curl()
-	#c.setopt(c.POST, 1)
-	#c.setopt(c.URL, "http://imaj.lddi.org:8010/submitimage")
-	#c.setopt(c.HTTPPOST, [("image", (c.FORM_FILE, os.path.join(dir_path, fname))), ("description", description), ("submituser", submituser), ("tags", tags)])
-	##c.setopt(c.VERBOSE, 1)
-	#c.setopt(c.WRITEFUNCTION, t.body_callback)
-	#c.perform()
-	#c.close()
+	buffer = StringIO.StringIO()
+	c = pycurl.Curl()
+	c.setopt(c.POST, 1)
+	c.setopt(c.URL, "http://imaj.lddi.org:8010/submitimage")
+	c.setopt(c.HTTPPOST, [("image", (c.FORM_FILE, os.path.join(dir_path, fname))), ("description", description), ("submituser", submituser), ("tags", tags)])
+	#c.setopt(c.VERBOSE, 1)
+	c.setopt(c.WRITEFUNCTION, buffer.write)
+	c.perform()
+	c.close()
 	#req.write("that's it ;)")
-	#req.write(t.contents)
-	file_upload.run_opload(
+	#req.write(buffer.getvalue())
 
-
-	#params = urllib.urlencode({'image': fileitem, 'description': description, 'submituser': submituser, 'tags': tags})
-	#f = urllib.urlopen("http://imaj.lddi.org:8010/submitimage", params)
-	#result = f.read
-	#result = jsontemplate.expand('{success}', json.read(f.read()))
-	#if result == "{'success': true}":
-	#	req.write("Thank you for your submission!\nAfter it is reviewed, it will be posted on the website!")
-	#else:
-	#	req.write("There was an error with your submission.\nPlease try again")
+	response = json.read(buffer.getvalue())
+	result = jsontemplate.expand('{success}', response)
+	if result.lower() == "true"
+		req.write("Thank you for your submission!\nAfter it is reviewed, it will be posted on the website!")
+	else:
+		req.write("There was an error with your submission: " + jsontemplate.expand('{error}', response) + ".\nPlease try again")
 	#
 else:
 	#

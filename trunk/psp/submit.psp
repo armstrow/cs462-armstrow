@@ -3,7 +3,7 @@
 from mod_python import apache
 from mod_python import util
 import urllib
-import pycurl
+import file_upload
 %>
 <html>
 	<head>
@@ -79,16 +79,17 @@ if form.has_key('image') and form['image'].filename:
 	#message = 'The file "%s" was uploaded successfully' % fname
 	#newFile = open(os.path.join(dir_path, fname), 'r')	
 
-	c = pycurl.Curl()
-	c.setopt(c.POST, 1)
-	c.setopt(c.URL, "http://imaj.lddi.org:8010/submitimage")
-	c.setopt(c.HTTPPOST, [("image", (c.FORM_FILE, os.path.join(dir_path, fname))), ("description", description), ("submituser", submituser), ("tags", tags)])
-	#c.setopt(c.VERBOSE, 1)
-	c.setopt(c.WRITEFUNCTION, t.body_callback)
-	c.perform()
-	c.close()
-	req.write("that's it ;)")
-	req.write(t.contents)
+	#c = pycurl.Curl()
+	#c.setopt(c.POST, 1)
+	#c.setopt(c.URL, "http://imaj.lddi.org:8010/submitimage")
+	#c.setopt(c.HTTPPOST, [("image", (c.FORM_FILE, os.path.join(dir_path, fname))), ("description", description), ("submituser", submituser), ("tags", tags)])
+	##c.setopt(c.VERBOSE, 1)
+	#c.setopt(c.WRITEFUNCTION, t.body_callback)
+	#c.perform()
+	#c.close()
+	#req.write("that's it ;)")
+	#req.write(t.contents)
+	file_upload.run_opload(
 
 
 	#params = urllib.urlencode({'image': fileitem, 'description': description, 'submituser': submituser, 'tags': tags})

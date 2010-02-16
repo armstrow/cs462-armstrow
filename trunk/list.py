@@ -1,3 +1,5 @@
+import sys
+sys.path.append('/var/www/python/')
 from mod_python import apache
 from mod_python import util
 from mod_python import psp

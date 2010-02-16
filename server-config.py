@@ -15,10 +15,11 @@ move("/home/root/project-code/stars.png", "/var/www/styles/stars.png")
 move("/home/root/project-code/jquery.rater.js", "/var/www/styles/jquery.rater.js")
 #subprocess.call(["apachectl -k start",""], shell=True)
 copytree("/home/root/project-code", "/var/www/python")
-
+subprocess.call(["mkdir	/var/www/python/psp/files",""], shell=True)
+subprocess.call(["chmod 777 /var/www/python/psp/files",""], shell=True)
  
 #executing commandline calls can be done with the subprocess module
-subprocess.call(["httpd start",""], shell=True)
+subprocess.call(["apachectl -k start",""], shell=True)
  
 #make sure to start any services required for this server.
  

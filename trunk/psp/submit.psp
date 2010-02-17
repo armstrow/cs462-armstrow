@@ -97,7 +97,7 @@ if form.has_key('image') and form['image'].filename:
 
 	response = json.read(buffer.getvalue())
 	result = jsontemplate.expand('{success}', response)
-	if result.lower() == "true"
+	if result.lower() == "true":
 		req.write("Thank you for your submission!\nAfter it is reviewed, it will be posted on the website!")
 		os.remove(os.path.join(dir_path, fname))
 	else:

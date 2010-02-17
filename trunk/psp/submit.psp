@@ -60,7 +60,13 @@ class Test:
    def body_callback(self, buf):
        self.contents = self.contents + buf
 
-if form.has_key('image') and form['image'].filename and form.has_key('description') and form.has_key('submituser') and (len(form['description']) <= 1000) and form['image'].filename.endswith(".jpg"):
+if form.has_key('image') and \
+        form['image'].filename and \
+        form['description'] != "" and \
+        form['submituser'] != "" and \
+        (len(form['description']) <= 1000) and \
+        form['image'].filename.endswith(".jpg"):
+
 	# A nested Field object holds the file
 	fileitem = form['image']
 	description = form['description']
@@ -113,16 +119,36 @@ else:
 
 <input type="hidden" name="filesubmit" value="true"/>
 <label>Picture</label>
-<input type="file" name="image"/><br/>
+<input type="file" name="image"/>
+<br/>
 <label>Tags</label>
-<input type="text" name="tags" value=""/> (comma seperated)<br/>
+<%
+        req.write("<input type=\"text\" name=\"tags\" value=\"")
+        if form.has_key('tags'):
+                req.write(form['tags'])
+        req.write("\"/>")
+%>
+(comma seperated)<br/>
 <label>Description</label>
-<textarea name="description"></textarea><br/>
+<%
+        req.write('<textarea name=\"description\">')
+        if form.has_key('description'):
+                req.write(form['description'])
+        req.write("</textarea>")
+%>
+<br/>
 <label>Your Name</label>
-<input type="text" name="submituser" value=""/><br/>
+<%
+        req.write("<input type=\"text\" name=\"submituser\" value=\"")
+        if form.has_key('submituser'):
+                req.write(form['submituser'])
+        req.write("\"/>")
+%>
+<br/>
 <input type="submit" value="Submit Picture"/>
 
 </form>
+
 <%
 #
 %>

@@ -60,7 +60,7 @@ class Test:
    def body_callback(self, buf):
        self.contents = self.contents + buf
 
-if form.has_key('image') and form['image'].filename:
+if form.has_key('image') and form['image'].filename and form.has_key('description') and form.has_key('submituser') and (len(form['description']) <= 1000) and form['image'].filename.endswith(".jpg"):
 	# A nested Field object holds the file
 	fileitem = form['image']
 	description = form['description']

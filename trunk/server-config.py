@@ -19,13 +19,13 @@ subprocess.call(["mkdir	/var/www/python/psp/files",""], shell=True)
 subprocess.call(["chmod 777 /var/www/python/psp/files",""], shell=True)
 
 subprocess.call(["svn checkout http://boto.googlecode.com/svn/trunk/ /home/root/boto-read-only", ""], shell=True)
-subprocess.call(["python /boto-read-only/setup.py install", ""], shell=True)
+subprocess.call(["python /home/root/boto-read-only/setup.py install", ""], shell=True)
 
 #executing commandline calls can be done with the subprocess module
 subprocess.call(["apachectl -k start",""], shell=True)
 
 #Register with load balancer
-from subprocess import Popen
+from subprocess import Popen, PIPE
 cmd = 'curl -s http://169.254.169.254/latest/meta-data/instance-id'
 instance_id = Popen([cmd, ""], stdout=PIPE).communicate()[0] 
 from boto.ec2.elb import ELBConnection

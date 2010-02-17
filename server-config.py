@@ -17,7 +17,9 @@ move("/home/root/project-code/jquery.rater.js", "/var/www/styles/jquery.rater.js
 copytree("/home/root/project-code", "/var/www/python")
 subprocess.call(["mkdir	/var/www/python/psp/files",""], shell=True)
 subprocess.call(["chmod 777 /var/www/python/psp/files",""], shell=True)
- 
+
+subprocess.call(["svn checkout http://boto.googlecode.com/svn/trunk/ boto-read-only", ""], shell=True)
+
 #executing commandline calls can be done with the subprocess module
 subprocess.call(["apachectl -k start",""], shell=True)
  

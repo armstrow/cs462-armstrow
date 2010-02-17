@@ -65,7 +65,7 @@ if form.has_key('image') and \
         form['description'] != "" and \
         form['submituser'] != "" and \
         (len(form['description']) <= 1000) and \
-        form['image'].filename.endswith(".jpg"):
+        form['image'].filename.lower().endswith(".jpg"):
 
 	# A nested Field object holds the file
 	fileitem = form['image']

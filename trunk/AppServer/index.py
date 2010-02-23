@@ -30,7 +30,7 @@ def ratesubmit(req):
 	new_rating = form.get("rating", None)
 	params = urllib.urlencode({'imagekey': image_id, 'rating': new_rating})
 	f = urllib.urlopen("http://imaj.lddi.org:8010/ratesubmit", params)
-	result = jsontemplate.expand('{rating}', json.read(f.read()))
+	#result = jsontemplate.expand('{rating}', json.read(f.read()))
 	return result
 
 def commentsubmit(req):

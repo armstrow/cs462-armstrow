@@ -25,7 +25,7 @@ def recent(req):
 			response['images'][-1]['submituser'] = item.get('submituser')
 			response['images'][-1]['submitdate'] = item.get('submitdate')
 			response['images'][-1]['description'] = item.get('description')
-			response['images'][-1]['rating'] = item.get('rating')
+			response['images'][-1]['rating'] = "%1.2f" % (float(item.get('rating')) / 100)
 			count = count + 1
 		else:
 			nextsubmitdate = item.get('submitdate')
@@ -63,7 +63,7 @@ def popular(req):
 		else:
 			rateSort = item.get('ratesort')
 			break
-	if nextsubmitdate != 999:
+	if rateSort != 999:
 		response['nextratesort'] = nextsubmitdate
 	else:
 		response['nextratesort'] = ""

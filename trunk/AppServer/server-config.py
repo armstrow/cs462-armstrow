@@ -13,6 +13,7 @@ subprocess.call(["mkdir /var/www/styles",""], shell=True)
 #subprocess.call(["apachectl -k start",""], shell=True)
 copytree("/home/root/project-code/AppServer", "/var/www/python")
 
+subprocess.call(["yum install -y python-json",""], shell=True)
 
 #executing commandline calls can be done with the subprocess module
 subprocess.call(["apachectl -k start",""], shell=True)

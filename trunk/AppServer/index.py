@@ -52,33 +52,33 @@ def ratesubmit(req):
 	#form = util.FieldStorage(req,keep_blank_values=1)
 	form = req.form
 	imagekey = form['imagekey']	
-	rating = float(form['rating'])
+	rating = float(form['rating']) * 100
 	item = domain.get_item(imagekey)
 	oldrating = float(item.get('rating'))
 	oldratingcount = int(item.get('ratingcount'))
 	newrating = oldrating + ((rating - oldrating)/(oldratingcount+1))
 	newratingcount = oldratingcount+1
 	
-	item['rating'] = newrating * 100
+	item['rating'] = newrating
 	item['ratingcount'] = "%0#5d" % newratingcount
-	item['ratesort'] = "%s%s" % ((newrating * 100), item.get('submitdate'))
+	item['ratesort'] = "%s%s" % ((newrating), item.get('submitdate'))
 	item.save()
 	response = {}
-	response['rating'] = newrating
+	response['rating'] = float(newrating / 100)
 	return json.write(response)
 
 def commentsubmit(req):
 	params = urllib.urlencode({'student': 'armstrow', 'type': 'INFO', 'system': 'appserver', 'message': 'Comment Submit stub called'})
 	f = urllib.urlopen("http://imaj.lddi.org:8080/log/submit", params)
 	response = {}
-	response['complete'] = true
+	response['complete'] = True
 	return json.write(response)
 
 def submitimage(req):
 	params = urllib.urlencode({'student': 'armstrow', 'type': 'INFO', 'system': 'appserver', 'message': 'Image Submit stub called'})
 	f = urllib.urlopen("http://imaj.lddi.org:8080/log/submit", params)
 	response = {}
-	response['success'] = true
+	response['success'] = True
 	return json.write(response)
 
 def alive(req):

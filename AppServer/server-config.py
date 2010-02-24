@@ -19,14 +19,14 @@ subprocess.call(["yum install -y python-json",""], shell=True)
 subprocess.call(["apachectl -k start",""], shell=True)
 
 #Register with load balancer
-from subprocess import Popen, PIPE
-cmd = 'curl -s http://169.254.169.254/latest/meta-data/instance-id'
-arglist = cmd.split()
-instance_id = Popen(arglist, stdout=PIPE).communicate()[0] 
-from boto.ec2.elb import ELBConnection
-conn = ELBConnection('AKIAJHJXHTMTVQYVZJOA','2YVZfFXQ7mhdFeUnMjcMOJ8uc5GBjz5LXhmh8LiM')
-lbs = conn.get_all_load_balancers()
-conn.register_instances('appserver-lb', [instance_id])
+#from subprocess import Popen, PIPE
+#cmd = 'curl -s http://169.254.169.254/latest/meta-data/instance-id'
+#arglist = cmd.split()
+#instance_id = Popen(arglist, stdout=PIPE).communicate()[0] 
+#from boto.ec2.elb import ELBConnection
+#conn = ELBConnection('AKIAJHJXHTMTVQYVZJOA','2YVZfFXQ7mhdFeUnMjcMOJ8uc5GBjz5LXhmh8LiM')
+#lbs = conn.get_all_load_balancers()
+#conn.register_instances('appserver-lb', [instance_id])
  
 #make sure to start any services required for this server.
  

@@ -70,12 +70,16 @@ def ratesubmit(req):
 def commentsubmit(req):
 	params = urllib.urlencode({'student': 'armstrow', 'type': 'INFO', 'system': 'appserver', 'message': 'Comment Submit stub called'})
 	f = urllib.urlopen("http://imaj.lddi.org:8080/log/submit", params)
-	return alive(req)
+	response = {}
+	response['complete'] = true
+	return json.write(response)
 
 def submitimage(req):
 	params = urllib.urlencode({'student': 'armstrow', 'type': 'INFO', 'system': 'appserver', 'message': 'Image Submit stub called'})
 	f = urllib.urlopen("http://imaj.lddi.org:8080/log/submit", params)
-	return alive(req)
+	response = {}
+	response['success'] = true
+	return json.write(response)
 
 def alive(req):
 	req.content_type = "text/plain"

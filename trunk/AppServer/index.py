@@ -49,22 +49,22 @@ def image(req):
 def ratesubmit(req):
 	sdb = boto.connect_sdb('AKIAJHJXHTMTVQYVZJOA','2YVZfFXQ7mhdFeUnMjcMOJ8uc5GBjz5LXhmh8LiM')
 	domain = sdb.get_domain('picture')
-	form = util.FieldStorage(req,keep_blank_values=1)
-	imagekey = form.get("imagekey", None)	
-	rating = int(form.get("rating", None))
+	#form = util.FieldStorage(req,keep_blank_values=1)
+	form = req.form
+	imagekey = form['imagekey']	
+	rating = float(form['rating'])
 	item = domain.get_item(imagekey)
 	oldrating = float(item.get('rating'))
 	oldratingcount = int(item.get('ratingcount'))
 	newrating = oldrating + ((rating - oldrating)/(oldratingcount+1))
 	newratingcount = oldratingcount+1
 	
-	newrating = int(newrating * 100)
-	item['rating'] = newrating
+	item['rating'] = newrating * 100
 	item['ratingcount'] = "%0#5d" % newratingcount
-	item['ratesort'] = "%s%s" % (newrating, item.get('submitdate'))
+	item['ratesort'] = "%s%s" % ((newrating * 100), item.get('submitdate'))
 	item.save()
 	response = {}
-	response['rating'] = item.get('rating')
+	response['rating'] = newrating
 	return json.write(response)
 
 def commentsubmit(req):

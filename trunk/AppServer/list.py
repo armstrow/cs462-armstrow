@@ -8,11 +8,11 @@ import json
 def recent(req):
 	sdb = boto.connect_sdb('AKIAJHJXHTMTVQYVZJOA','2YVZfFXQ7mhdFeUnMjcMOJ8uc5GBjz5LXhmh8LiM')
 	domain = sdb.get_domain('picture')
-	nextSubmitDate = 2900
+	nextSubmitDate = repr(2900)
 	form = util.FieldStorage(req,keep_blank_values=1)
 	if form.has_key("nextsubmitdate"):
 		nextSubmitDate = form.get("nextsubmitdate", None)	
-	query = "SELECT * FROM picture WHERE submitdate <= '" + repr(nextSubmitDate) + "' ORDER BY submitdate desc"
+	query = "SELECT * FROM picture WHERE submitdate <= '" + nextSubmitDate + "' ORDER BY submitdate desc"
 	result = domain.select(query)
 	response = {}
 	response['images'] = []
@@ -30,7 +30,7 @@ def recent(req):
 		else:
 			nextsubmitdate = item.get('submitdate')
 			break
-	if nextsubmitdate != 2900:
+	if nextsubmitdate != "2900":
 		response['nextsubmitdate'] = nextsubmitdate
 	else:
 		response['nextsubmitdate'] = ""
@@ -41,11 +41,11 @@ def recent(req):
 def popular(req):
 	sdb = boto.connect_sdb('AKIAJHJXHTMTVQYVZJOA','2YVZfFXQ7mhdFeUnMjcMOJ8uc5GBjz5LXhmh8LiM')
 	domain = sdb.get_domain('picture')
-	rateSort = 999
+	rateSort = repr(999)
 	form = util.FieldStorage(req,keep_blank_values=1)
 	if form.has_key("nextratesort"):
-		nextSubmitDate = form.get("nextratesort", None)	
-	query = "SELECT * FROM picture WHERE ratesort <= '" + repr(rateSort) + "' ORDER BY ratesort desc"
+		rateSort = form.get("nextratesort", None)	
+	query = "SELECT * FROM picture WHERE ratesort <= '" + rateSort + "' ORDER BY ratesort desc"
 	result = domain.select(query)
 	response = {}
 	response['images'] = []
@@ -63,7 +63,7 @@ def popular(req):
 		else:
 			rateSort = item.get('ratesort')
 			break
-	if rateSort != 999:
+	if rateSort != "999":
 		response['nextratesort'] = rateSort
 	else:
 		response['nextratesort'] = ""

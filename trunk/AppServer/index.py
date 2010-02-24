@@ -20,19 +20,19 @@ def image(req):
 		imagekey = form.get("imagekey", None)	
 		response = {}
 		item = domain.get_item(imagekey)
-        response['imagekey'] = "" + imagekey
-        response['imageURL'] = "http://theimageproject.s3.amazonaws.com/" + item.name + "m.jpg"
-        response['imageheight'] = item.get('imageheight')
-        response['imagewidth'] = item.get('imagewidth')
-        response['tag'] = item.get('tag')
-        response['description'] = item.get('description')
-        response['submituser'] = item.get('submituser')
-        response['submitdate'] = item.get('submitdate')
-        response['rating'] = float(item.get('rating')) / 100
-        response['ratingcount'] = int(item.get('ratingcount'))
-        query = "SELECT * FROM comment WHERE imagekey = '" + imagekey + "'"
-        result = domain.select(query)
-        response['comments'] = []
+		response['imagekey'] = "" + imagekey
+		response['imageURL'] = "http://theimageproject.s3.amazonaws.com/" + item.name + "m.jpg"
+		response['imageheight'] = item.get('imageheight')
+		response['imagewidth'] = item.get('imagewidth')
+		response['tag'] = item.get('tag')
+		response['description'] = item.get('description')
+		response['submituser'] = item.get('submituser')
+		response['submitdate'] = item.get('submitdate')
+		response['rating'] = float(item.get('rating')) / 100
+		response['ratingcount'] = int(item.get('ratingcount'))
+		query = "SELECT * FROM comment WHERE imagekey = '" + imagekey + "'"
+		result = domain.select(query)
+		response['comments'] = []
 		for item in result:
 			response['comments'].append({})
 			response['comments'][-1]['commentkey'] = item.name
@@ -58,17 +58,23 @@ def ratesubmit(req):
 	newrating = oldrating + ((rating - oldrating)/(oldratingcount+1))
 	newratingcount = oldratingcount+1
 	
-	item.set('rating', int(newrating*100))
-	item.set('ratingcount', "%0#5d" % newratingcount)
-	item.set('ratesort', "%s%s" % (item.get('rating'), item.get('submitdate')))
+	newrating = int(newrating * 100)
+	item['rating'] = newrating
+	item['ratingcount'] = "%0#5d" % newratingcount
+	item['ratesort'] = "%s%s" % (newrating, item.get('submitdate'))
+	item.save()
 	response = {}
 	response['rating'] = item.get('rating')
 	return json.write(response)
 
 def commentsubmit(req):
+	params = urllib.urlencode({'student': 'armstrow', 'type': 'INFO', 'system': 'appserver', 'message': 'Comment Submit stub called'})
+	f = urllib.urlopen("http://imaj.lddi.org:8080/log/submit", params)
 	return alive(req)
 
 def submitimage(req):
+	params = urllib.urlencode({'student': 'armstrow', 'type': 'INFO', 'system': 'appserver', 'message': 'Image Submit stub called'})
+	f = urllib.urlopen("http://imaj.lddi.org:8080/log/submit", params)
 	return alive(req)
 
 def alive(req):

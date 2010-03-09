@@ -3,6 +3,7 @@ sys.path.append('/var/www/python/')
 from mod_python import apache
 from mod_python import util
 from mod_python import psp
+from boto.sqs.message import Message
 #import jsontemplate
 #import jsonutils.json as json
 import urllib
@@ -57,8 +58,7 @@ def ratesubmit(req):
 	oldrating = float(item.get('rating'))
 	oldratingcount = int(item.get('ratingcount'))
 	newrating = oldrating + ((rating - oldrating)/(oldratingcount+1))
-	newratingcount = oldratingcount+1
-	
+	newratingcount = oldratingcount+1	
 	item['rating'] = newrating
 	item['ratingcount'] = "%0#5d" % newratingcount
 	item['ratesort'] = "%s%s" % ((newrating), item.get('submitdate'))
@@ -68,10 +68,28 @@ def ratesubmit(req):
 	return json.write(response)
 
 def commentsubmit(req):
-	params = urllib.urlencode({'student': 'armstrow', 'type': 'INFO', 'system': 'appserver', 'message': 'Comment Submit stub called'})
-	f = urllib.urlopen("http://imaj.lddi.org:8080/log/submit", params)
+	sdb = boto.connect_sdb('AKIAJHJXHTMTVQYVZJOA','2YVZfFXQ7mhdFeUnMjcMOJ8uc5GBjz5LXhmh8LiM')
+	domain = sdb.get_domain('picture')
+	form = req.form
+	imagekey = form['imagekey']
+	user = form['commentuser']
+	cmt = form['comment']	
+	sqsconn = SQSConnection('AKIAJHJXHTMTVQYVZJOA','2YVZfFXQ7mhdFeUnMjcMOJ8uc5GBjz5LXhmh8LiM')
+	q = sqsconn.get_queue('commentprocess')
+	import uuid
+	guid = uuid.uuid1()
+	from time import strftime
+	request = {}
+	request['commentkey'] = str(guid)
+	request['submitdate'] = strftime("%Y-%m-%dT%H:%M:%S")
+	request['comment'] = cmt
+	request['submituser'] = user
+	m = Message()
+	m.set_body(json.write(request))
+	status = q.write(m)
 	response = {}
-	response['complete'] = True
+	response['complete'] = status
+	response['commentkey'] = str(guid)
 	return json.write(response)
 
 def submitimage(req):

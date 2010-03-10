@@ -3,7 +3,7 @@ sys.path.append('/var/www/python/')
 from mod_python import apache
 from mod_python import util
 from mod_python import psp
-from boto.sqs.message import Message
+from boto.sqs.message import RawMessage
 from boto.sqs.connection import SQSConnection
 #import jsontemplate
 #import jsonutils.json as json
@@ -11,11 +11,14 @@ import urllib
 import boto
 import json
 
+AWSKey = 'AKIAJHJXHTMTVQYVZJOA'
+AWSSecret = '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'
+
 def index(req):
 	return alive(req)
 
 def image(req):
-	sdb = boto.connect_sdb('AKIAJHJXHTMTVQYVZJOA','2YVZfFXQ7mhdFeUnMjcMOJ8uc5GBjz5LXhmh8LiM')
+	sdb = boto.connect_sdb(AWSKey, AWSSecret)
 	domain = sdb.get_domain('picture')
 	form = util.FieldStorage(req,keep_blank_values=1)
 	if form.has_key("imagekey"):
@@ -50,7 +53,7 @@ def image(req):
 
 
 def ratesubmit(req):
-	sdb = boto.connect_sdb('AKIAJHJXHTMTVQYVZJOA','2YVZfFXQ7mhdFeUnMjcMOJ8uc5GBjz5LXhmh8LiM')
+	sdb = boto.connect_sdb(AWSKey, AWSSecret)
 	domain = sdb.get_domain('picture')
 	#form = util.FieldStorage(req,keep_blank_values=1)
 	form = req.form
@@ -70,7 +73,7 @@ def ratesubmit(req):
 	return json.write(response)
 
 def commentsubmit(req):
-	sdb = boto.connect_sdb('AKIAJHJXHTMTVQYVZJOA','2YVZfFXQ7mhdFeUnMjcMOJ8uc5GBjz5LXhmh8LiM')
+	sdb = boto.connect_sdb(AWSKey, AWSSecret)
 	domain = sdb.get_domain('comment')
 	form = req.form
 	imagekey = form['imagekey']
@@ -86,29 +89,77 @@ def commentsubmit(req):
 	item['status'] = "processing"
 	item['submitdate'] = strftime("%Y-%m-%dT%H:%M:%S")
 	item.save()
-	sqsconn = SQSConnection('AKIAJHJXHTMTVQYVZJOA','2YVZfFXQ7mhdFeUnMjcMOJ8uc5GBjz5LXhmh8LiM')
+	sqsconn = SQSConnection(AWSKey, AWSSecret)
 	q = sqsconn.get_queue('commentprocess')
 	request = {}
 	request['commentkey'] = guid
 	request['submitdate'] = strftime("%Y-%m-%dT%H:%M:%S")
 	request['comment'] = str(cmt)
 	request['submituser'] = str(user)
-	m = Message()
+	m = RawMessage()
 	m.set_body(json.write(request))
 	status = q.write(m)
 	response = {}
 	if status==m:
 		response['complete'] = True
-		response['commentkey'] = str(guid)
+		response['commentkey'] = guid
 	else:
 		response['complete'] = False
 	return json.write(response)
 
 def submitimage(req):
-	params = urllib.urlencode({'student': 'armstrow', 'type': 'INFO', 'system': 'appserver', 'message': 'Image Submit stub called'})
-	f = urllib.urlopen("http://imaj.lddi.org:8080/log/submit", params)
+	sdb = boto.connect_sdb(AWSKey, AWSSecret)
+	domain = sdb.get_domain('picture')
+	form = req.form
+	tags = str(form['tags'])
+	user = str(form['submituser'])
+	description = str(form['description'])
+	fileitem = form['image']
+	import uuid
+	from time import strftime
+	guid = str(uuid.uuid1())
+	item = domain.new_item(guid)
+	try: # Windows needs stdio set for binary mode.
+		import msvcrt
+		msvcrt.setmode (0, os.O_BINARY) # stdin  = 0
+		msvcrt.setmode (1, os.O_BINARY) # stdout = 1
+	except ImportError:
+		pass
+	# strip leading path from file name to avoid directory traversal attacks
+	fname = os.path.basename(fileitem.filename)
+	# build absolute path to files directory
+	dir_path = os.path.dirname(req.filename)
+	open(os.path.join(dir_path, fname), 'wb').write(fileitem.file.read())
+	from boto.s3.connection import S3Connection
+	conn = S3Connection(AWSKey, AWSSecret)
+	bucket = conn.get_bucket('theimageproject')
+	from boto.s3.key import Key
+	k = Key(bucket)
+	k.key = guid + ".jpg"
+	k.set_contents_from_filename(os.path.join(dir_path, fname))
+	item['description'] = description
+	item['submituser'] = user
+	item['submitdate'] = strftime("%Y-%m-%dT%H:%M:%S")
+	item['rating'] = 0
+	item['ratingcount'] = 0
+	item['ratesort']
+	item['status'] = "processing"
+	item['tags'] = tags.split(',')
+	item.save()
+	sqsconn = SQSConnection(AWSKey, AWSSecret)
+	q = sqsconn.get_queue('imageprocess')
+	request = {}
+	request['imagekey'] = guid
+	request['submitdate'] = strftime("%Y-%m-%dT%H:%M:%S")
+	m = RawMessage()
+	m.set_body(json.write(request))
+	status = q.write(m)
 	response = {}
-	response['success'] = True
+	if status==m:
+		response['complete'] = True
+		response['imagekey'] = guid
+	else:
+		response['complete'] = False
 	return json.write(response)
 
 def alive(req):

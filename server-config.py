@@ -18,6 +18,7 @@ copytree("/home/root/project-code", "/var/www/python")
 subprocess.call(["mkdir	/var/www/python/psp/files",""], shell=True)
 subprocess.call(["chmod 777 /var/www/python/psp/files",""], shell=True)
 
+
 #subprocess.call(["svn checkout http://boto.googlecode.com/svn/trunk/ /home/root/boto", ""], shell=True)
 #subprocess.call(["cd /home/root/boto", ""], shell=True)
 #subprocess.call(["python setup.py install", ""], shell=True)

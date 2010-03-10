@@ -26,6 +26,7 @@ while True:
 		cmt.save()
 		params = urllib.urlencode({'student': 'armstrow', 'type': 'INFO', 'system': 'appserver', 'message': 'Comment result processed: '+cmtkey})
 		f = urllib.urlopen("http://imaj.lddi.org:8080/log/submit", params)
+		q.delete_message(item)
 	time.sleep(10)
 #	
 

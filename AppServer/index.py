@@ -4,6 +4,7 @@ from mod_python import apache
 from mod_python import util
 from mod_python import psp
 from boto.sqs.message import Message
+from boto.sqs.connection import SQSConnection
 #import jsontemplate
 #import jsonutils.json as json
 import urllib
@@ -74,22 +75,32 @@ def commentsubmit(req):
 	imagekey = form['imagekey']
 	user = form['commentuser']
 	cmt = form['comment']	
+	import uuid
+	guid = str(uuid.uuid1())
+	item = domain.new_item(guid)
+	item['submituser'] = user
+	item['imagekey'] = imagekey
+	item['comment'] = cmt
+	item['status'] = "processing"
+	item['submitdate'] = strftime("%Y-%m-%dT%H:%M:%S")
+	item.save()
 	sqsconn = SQSConnection('AKIAJHJXHTMTVQYVZJOA','2YVZfFXQ7mhdFeUnMjcMOJ8uc5GBjz5LXhmh8LiM')
 	q = sqsconn.get_queue('commentprocess')
-	import uuid
-	guid = uuid.uuid1()
 	from time import strftime
 	request = {}
-	request['commentkey'] = str(guid)
+	request['commentkey'] = guid
 	request['submitdate'] = strftime("%Y-%m-%dT%H:%M:%S")
-	request['comment'] = cmt
-	request['submituser'] = user
+	request['comment'] = str(cmt)
+	request['submituser'] = str(user)
 	m = Message()
 	m.set_body(json.write(request))
 	status = q.write(m)
 	response = {}
-	response['complete'] = status
-	response['commentkey'] = str(guid)
+	if status==m:
+		response['complete'] = True
+		response['commentkey'] = str(guid)
+	else:
+		response['complete'] = False
 	return json.write(response)
 
 def submitimage(req):

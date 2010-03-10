@@ -70,12 +70,13 @@ def ratesubmit(req):
 
 def commentsubmit(req):
 	sdb = boto.connect_sdb('AKIAJHJXHTMTVQYVZJOA','2YVZfFXQ7mhdFeUnMjcMOJ8uc5GBjz5LXhmh8LiM')
-	domain = sdb.get_domain('picture')
+	domain = sdb.get_domain('comment')
 	form = req.form
 	imagekey = form['imagekey']
 	user = form['commentuser']
 	cmt = form['comment']	
 	import uuid
+	from time import strftime
 	guid = str(uuid.uuid1())
 	item = domain.new_item(guid)
 	item['submituser'] = user
@@ -86,7 +87,6 @@ def commentsubmit(req):
 	item.save()
 	sqsconn = SQSConnection('AKIAJHJXHTMTVQYVZJOA','2YVZfFXQ7mhdFeUnMjcMOJ8uc5GBjz5LXhmh8LiM')
 	q = sqsconn.get_queue('commentprocess')
-	from time import strftime
 	request = {}
 	request['commentkey'] = guid
 	request['submitdate'] = strftime("%Y-%m-%dT%H:%M:%S")

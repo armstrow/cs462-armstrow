@@ -12,6 +12,8 @@ move("/home/root/project-code/AppServer/httpd.conf", "/etc/httpd/conf")
 subprocess.call(["mkdir /var/www/styles",""], shell=True)
 #subprocess.call(["apachectl -k start",""], shell=True)
 copytree("/home/root/project-code/AppServer", "/var/www/python")
+subprocess.call(["mkdir	/var/www/python/files",""], shell=True)
+subprocess.call(["chmod 777 /var/www/python/files",""], shell=True)
 
 subprocess.call(["yum install -y python-json",""], shell=True)
 

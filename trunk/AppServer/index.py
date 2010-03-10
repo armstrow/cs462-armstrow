@@ -10,6 +10,7 @@ from boto.sqs.connection import SQSConnection
 import urllib
 import boto
 import json
+import os
 
 AWSKey = 'AKIAJHJXHTMTVQYVZJOA'
 AWSSecret = '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'
@@ -128,7 +129,7 @@ def submitimage(req):
 	# strip leading path from file name to avoid directory traversal attacks
 	fname = os.path.basename(fileitem.filename)
 	# build absolute path to files directory
-	dir_path = os.path.dirname(req.filename)
+	dir_path = os.path.join(os.path.dirname(req.filename), 'files')
 	open(os.path.join(dir_path, fname), 'wb').write(fileitem.file.read())
 	from boto.s3.connection import S3Connection
 	conn = S3Connection(AWSKey, AWSSecret)
@@ -137,20 +138,27 @@ def submitimage(req):
 	k = Key(bucket)
 	k.key = guid + ".jpg"
 	k.set_contents_from_filename(os.path.join(dir_path, fname))
+	curtime = strftime("%Y-%m-%dT%H:%M:%S")
 	item['description'] = description
 	item['submituser'] = user
-	item['submitdate'] = strftime("%Y-%m-%dT%H:%M:%S")
+	item['submitdate'] = curtime
 	item['rating'] = 0
 	item['ratingcount'] = 0
-	item['ratesort']
+	item['ratesort'] = "%s%s" % (0, curtime)
 	item['status'] = "processing"
-	item['tags'] = tags.split(',')
+	taglist = tags.split(',')
+	if len(taglist) == 1:
+		item['tags'] = taglist[0]
+	else:
+		item['tags'] = []
+		for tag in taglist:
+			item.add_value('tags', tag)
 	item.save()
 	sqsconn = SQSConnection(AWSKey, AWSSecret)
 	q = sqsconn.get_queue('imageprocess')
 	request = {}
 	request['imagekey'] = guid
-	request['submitdate'] = strftime("%Y-%m-%dT%H:%M:%S")
+	request['submitdate'] = curtime
 	m = RawMessage()
 	m.set_body(json.write(request))
 	status = q.write(m)
@@ -160,6 +168,7 @@ def submitimage(req):
 		response['imagekey'] = guid
 	else:
 		response['complete'] = False
+	os.remove(os.path.join(dir_path, fname))
 	return json.write(response)
 
 def alive(req):

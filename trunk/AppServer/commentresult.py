@@ -10,6 +10,7 @@ import urllib
 
 sqsconn = SQSConnection('AKIAJHJXHTMTVQYVZJOA','2YVZfFXQ7mhdFeUnMjcMOJ8uc5GBjz5LXhmh8LiM')
 q = sqsconn.get_queue('commentresult')
+q.set_message_class(RawMessage)
 while True:
 	rs = q.get_messages()
 	for item in rs:

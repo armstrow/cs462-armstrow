@@ -36,11 +36,12 @@ def image(req):
 		result = domain.select(query)
 		response['comments'] = []
 		for item in result:
-			response['comments'].append({})
-			response['comments'][-1]['commentkey'] = item.name
-			response['comments'][-1]['submituser'] = item.get('submituser')
-			response['comments'][-1]['submitdate'] = item.get('submitdate')
-			response['comments'][-1]['comment'] = item.get('comment')
+			if item.get('status') == "approved":
+				response['comments'].append({})
+				response['comments'][-1]['commentkey'] = item.name
+				response['comments'][-1]['submituser'] = item.get('submituser')
+				response['comments'][-1]['submitdate'] = item.get('submitdate')
+				response['comments'][-1]['comment'] = item.get('comment')
 		req.content_type = "text/plain"
 		req.send_http_header()
 		return json.write(response)

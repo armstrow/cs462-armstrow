@@ -146,13 +146,7 @@ def submitimage(req):
 	item['ratingcount'] = 0
 	item['ratesort'] = "%s%s" % (0, curtime)
 	item['status'] = "processing"
-	taglist = tags.split(',')
-	if len(taglist) == 1:
-		item['tags'] = taglist[0]
-	else:
-		item['tags'] = []
-		for tag in taglist:
-			item.add_value('tags', tag)
+	item['tag'] = tags.split(',')
 	item.save()
 	sqsconn = SQSConnection(AWSKey, AWSSecret)
 	q = sqsconn.get_queue('imageprocess')
@@ -168,7 +162,6 @@ def submitimage(req):
 		response['imagekey'] = guid
 	else:
 		response['complete'] = False
-	os.remove(os.path.join(dir_path, fname))
 	return json.write(response)
 
 def alive(req):

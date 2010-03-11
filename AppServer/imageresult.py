@@ -25,7 +25,7 @@ while True:
 		img['imagewidth'] = width
 		img['status'] = "approval"
 		img.save()
-		params = urllib.urlencode({'student': 'armstrow', 'type': 'INFO', 'system': 'appserver', 'message': 'image processed result processed: '+cmtkey})
+		params = urllib.urlencode({'student': 'armstrow', 'type': 'INFO', 'system': 'appserver', 'message': 'image processed result processed: '+imgkey})
 		f = urllib.urlopen("http://imaj.lddi.org:8080/log/submit", params)
 		request = {}
 		request['imagekey'] = imgkey
@@ -38,8 +38,8 @@ while True:
 		request['submitdate'] = img.get('submitdate')
 		m = RawMessage()
 		m.set_body(json.write(request))
-		q = sqsconn.get_queue('approvalprocess')
-		status = q.write(m)
+		q2 = sqsconn.get_queue('approvalprocess')
+		status = q2.write(m)
 		q.delete_message(item)
 	time.sleep(10)
 #

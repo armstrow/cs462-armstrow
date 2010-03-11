@@ -24,7 +24,7 @@ while True:
 		else:
 			img['status'] = "denied"
 		img.save()
-		params = urllib.urlencode({'student': 'armstrow', 'type': 'INFO', 'system': 'appserver', 'message': 'Image approval result processed: '+cmtkey})
+		params = urllib.urlencode({'student': 'armstrow', 'type': 'INFO', 'system': 'appserver', 'message': 'Image approval result processed: '+imgkey})
 		f = urllib.urlopen("http://imaj.lddi.org:8080/log/submit", params)
 		q.delete_message(item)
 	time.sleep(10)

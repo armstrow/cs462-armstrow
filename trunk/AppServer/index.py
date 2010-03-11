@@ -26,29 +26,32 @@ def image(req):
 		imagekey = form.get("imagekey", None)	
 		response = {}
 		item = domain.get_item(imagekey)
-		response['imagekey'] = "" + imagekey
-		response['imageURL'] = "http://theimageproject.s3.amazonaws.com/" + item.name + "m.jpg"
-		response['imageheight'] = item.get('imageheight')
-		response['imagewidth'] = item.get('imagewidth')
-		response['tag'] = item.get('tag')
-		response['description'] = item.get('description')
-		response['submituser'] = item.get('submituser')
-		response['submitdate'] = item.get('submitdate')
-		response['rating'] = float(item.get('rating')) / 100
-		response['ratingcount'] = int(item.get('ratingcount'))
-		query = "SELECT * FROM comment WHERE imagekey = '" + imagekey + "'"
-		result = domain.select(query)
-		response['comments'] = []
-		for item in result:
-			if item.get('status') == "approved":
-				response['comments'].append({})
-				response['comments'][-1]['commentkey'] = item.name
-				response['comments'][-1]['submituser'] = item.get('submituser')
-				response['comments'][-1]['submitdate'] = item.get('submitdate')
-				response['comments'][-1]['comment'] = item.get('comment')
-		req.content_type = "text/plain"
-		req.send_http_header()
-		return json.write(response)
+		if item.get('status') == "approved":
+			response['imagekey'] = "" + imagekey
+			response['imageURL'] = "http://theimageproject.s3.amazonaws.com/" + item.name + "m.jpg"
+			response['imageheight'] = item.get('imageheight')
+			response['imagewidth'] = item.get('imagewidth')
+			response['tag'] = item.get('tag')
+			response['description'] = item.get('description')
+			response['submituser'] = item.get('submituser')
+			response['submitdate'] = item.get('submitdate')
+			response['rating'] = float(item.get('rating')) / 100
+			response['ratingcount'] = int(item.get('ratingcount'))
+			query = "SELECT * FROM comment WHERE imagekey = '" + imagekey + "'"
+			result = domain.select(query)
+			response['comments'] = []
+			for item in result:
+				if item.get('status') == "approved":
+					response['comments'].append({})
+					response['comments'][-1]['commentkey'] = item.name
+					response['comments'][-1]['submituser'] = item.get('submituser')
+					response['comments'][-1]['submitdate'] = item.get('submitdate')
+					response['comments'][-1]['comment'] = item.get('comment')
+			req.content_type = "text/plain"
+			req.send_http_header()
+			return json.write(response)
+		else:
+			return alive(req)
 	else:
 		return alive(req)
 

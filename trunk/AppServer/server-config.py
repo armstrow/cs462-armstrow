@@ -16,6 +16,7 @@ subprocess.call(["mkdir	/var/www/python/files",""], shell=True)
 subprocess.call(["chmod 777 /var/www/python/files",""], shell=True)
 
 subprocess.call(["yum install -y python-json",""], shell=True)
+subprocess.call(["yum install -y python-imaging",""], shell=True)
 
 #executing commandline calls can be done with the subprocess module
 subprocess.call(["apachectl -k start",""], shell=True)

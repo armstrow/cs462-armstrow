@@ -1,5 +1,6 @@
 #! /usr/bin/env python
 
+from time import strftime
 import os, sys
 import Image, ImageDraw
 import time
@@ -54,7 +55,7 @@ while True:
 			box = (0, 0, xsize, xsize)	
 			square = im.crop(box)
 			thumb = im.resize((thumbSize, thumbSize))
-		height, width = out.size
+		width, height = out.size
 		imTxt = Image.new("RGBA", out.size, (0,0,0,0))
 		dr = ImageDraw.Draw(imTxt)
 		dr.text((10,10), "The Image Project", fill=(255,255,255,175))
@@ -68,12 +69,14 @@ while True:
 				thumb.save(outfile1, "JPEG")
 			except IOError:
 				print "cannot create output for", infile
-		k.key = guid + "m.jpg"
+		k.key = imgkey + "m.jpg"
 		k.set_contents_from_filename(os.path.join(dir_path, "imagem.jpg"))
-		k.key = guid + "t.jpg"
+		k.set_acl('public-read')
+		k.key = imgkey + "t.jpg"
 		k.set_contents_from_filename(os.path.join(dir_path, "imaget.jpg"))
+		k.set_acl('public-read')
 		
-		params = urllib.urlencode({'student': 'armstrow', 'type': 'INFO', 'system': 'appserver','message': 'image processed: '+imgkey+', newHeight: '+height+', newWidth: '+width})
+		params = urllib.urlencode({'student': 'armstrow', 'type': 'INFO', 'system': 'appserver','message': 'image processed: '+imgkey+', newHeight: '+str(height)+', newWidth: '+str(width)})
 		f = urllib.urlopen("http://imaj.lddi.org:8080/log/submit", params)
 		request = {}
 		request['imagekey'] = imgkey

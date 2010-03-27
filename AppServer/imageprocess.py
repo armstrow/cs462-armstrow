@@ -32,7 +32,13 @@ while True:
 		from boto.s3.key import Key
 		k = Key(bucket)
 		k.key = imgkey + ".jpg"
-		k.get_contents_to_filename(os.path.join(dir_path, "image.jpg"))
+		tryAgain = True
+		while tryAgain:
+			try:
+				k.get_contents_to_filename(os.path.join(dir_path, "image.jpg"))
+				tryAgain = False
+			except boto.exception.S3ResponseError
+				tryAgain = True
 		infile = os.path.join(dir_path, "image.jpg")
 
 		im = Image.open(infile)

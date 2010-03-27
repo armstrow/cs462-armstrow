@@ -161,7 +161,7 @@ def submitimage(req):
 	status = q.write(m)
 	response = {}
 	if status==m:
-		response['complete'] = True
+		response['success'] = True
 		response['imagekey'] = guid
 	else:
 		response['complete'] = False

@@ -40,7 +40,7 @@ while True:
 			except boto.exception.S3ResponseError:
 				tryAgain = True
 		infile = os.path.join(dir_path, imgkey + ".jpg")
-		while (!os.path.isfile(infile)):
+		while (not os.path.isfile(infile)):
 			#wait for file to download
 		im = Image.open(infile)
 		xsize, ysize = im.size

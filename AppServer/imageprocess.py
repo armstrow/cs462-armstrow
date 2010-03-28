@@ -35,12 +35,13 @@ while True:
 		tryAgain = True
 		while tryAgain:
 			try:
-				k.get_contents_to_filename(os.path.join(dir_path, "image.jpg"))
+				k.get_contents_to_filename(os.path.join(dir_path, imgkey + ".jpg"))
 				tryAgain = False
 			except boto.exception.S3ResponseError:
 				tryAgain = True
-		infile = os.path.join(dir_path, "image.jpg")
-
+		infile = os.path.join(dir_path, imgkey + ".jpg")
+		while (!os.path.isfile(infile)):
+			#wait for file to download
 		im = Image.open(infile)
 		xsize, ysize = im.size
 		if (xsize > ysize):
@@ -76,10 +77,10 @@ while True:
 			except IOError:
 				print "cannot create output for", infile
 		k.key = imgkey + "m.jpg"
-		k.set_contents_from_filename(os.path.join(dir_path, "imagem.jpg"))
+		k.set_contents_from_filename(os.path.join(dir_path, imgkey + "m.jpg"))
 		k.set_acl('public-read')
 		k.key = imgkey + "t.jpg"
-		k.set_contents_from_filename(os.path.join(dir_path, "imaget.jpg"))
+		k.set_contents_from_filename(os.path.join(dir_path, imgkey + "t.jpg"))
 		k.set_acl('public-read')
 		
 		params = urllib.urlencode({'student': 'armstrow', 'type': 'INFO', 'system': 'appserver','message': 'image processed: '+imgkey+', newHeight: '+str(height)+', newWidth: '+str(width)})

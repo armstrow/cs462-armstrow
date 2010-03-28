@@ -41,7 +41,7 @@ while True:
 				tryAgain = True
 		infile = os.path.join(dir_path, imgkey + ".jpg")
 		while (not os.path.isfile(infile)):
-			#wait for file to download
+			a = 1 #wait for file to download
 		im = Image.open(infile)
 		xsize, ysize = im.size
 		if (xsize > ysize):

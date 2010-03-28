@@ -42,59 +42,62 @@ while True:
 		infile = os.path.join(dir_path, imgkey + ".jpg")
 		while (not os.path.isfile(infile)):
 			a = 1 #wait for file to download
-		im = Image.open(infile)
-		xsize, ysize = im.size
-		if (xsize > ysize):
-			if xsize > fullSize:
-				prop = fullSize / xsize
-				out = im.resize((fullSize, ysize * prop))
+		try:
+			im = Image.open(infile)
+			xsize, ysize = im.size
+			if (xsize > ysize):
+				if xsize > fullSize:
+					prop = fullSize / xsize
+					out = im.resize((fullSize, ysize * prop))
+				else:
+					out = im
+				box = (0, 0, ysize, ysize)	
+				square = im.crop(box)
+				thumb = im.resize((thumbSize, thumbSize))		
 			else:
-				out = im
-			box = (0, 0, ysize, ysize)	
-			square = im.crop(box)
-			thumb = im.resize((thumbSize, thumbSize))		
-		else:
-			if ysize > fullSize:
-				prop = fullSize / ysize
-				out = im.resize((xsize * prop, fullSize))
-			else:
-				out = im
-			box = (0, 0, xsize, xsize)	
-			square = im.crop(box)
-			thumb = im.resize((thumbSize, thumbSize))
-		width, height = out.size
-		imTxt = Image.new("RGBA", out.size, (0,0,0,0))
-		dr = ImageDraw.Draw(imTxt)
-		dr.text((10,10), "The Image Project", fill=(255,255,255,175))
-		imTxt.save("watermark.png", "PNG")
-		out.paste(imTxt, (0,0), imTxt)
-		outfile = os.path.splitext(infile)[0] + "m.jpg"
-		outfile1 = os.path.splitext(infile)[0] + "t.jpg"
-		if infile != outfile:
-			try:
-				out.save(outfile, "JPEG")
-				thumb.save(outfile1, "JPEG")
-			except IOError:
-				print "cannot create output for", infile
-		k.key = imgkey + "m.jpg"
-		k.set_contents_from_filename(os.path.join(dir_path, imgkey + "m.jpg"))
-		k.set_acl('public-read')
-		k.key = imgkey + "t.jpg"
-		k.set_contents_from_filename(os.path.join(dir_path, imgkey + "t.jpg"))
-		k.set_acl('public-read')
-		
-		params = urllib.urlencode({'student': 'armstrow', 'type': 'INFO', 'system': 'appserver','message': 'image processed: '+imgkey+', newHeight: '+str(height)+', newWidth: '+str(width)})
-		f = urllib.urlopen("http://imaj.lddi.org:8080/log/submit", params)
-		request = {}
-		request['imagekey'] = imgkey
-		request['imageheight'] = height
-		request['imagewidth'] = width
-		request['processeddate'] = curtime
-		m = RawMessage()
-		m.set_body(json.write(request))
-		q2 = sqsconn.get_queue('imageresult')
-		status = q2.write(m)
-		q.delete_message(item)
+				if ysize > fullSize:
+					prop = fullSize / ysize
+					out = im.resize((xsize * prop, fullSize))
+				else:
+					out = im
+				box = (0, 0, xsize, xsize)	
+				square = im.crop(box)
+				thumb = im.resize((thumbSize, thumbSize))
+			width, height = out.size
+			imTxt = Image.new("RGBA", out.size, (0,0,0,0))
+			dr = ImageDraw.Draw(imTxt)
+			dr.text((10,10), "The Image Project", fill=(255,255,255,175))
+			imTxt.save("watermark.png", "PNG")
+			out.paste(imTxt, (0,0), imTxt)
+			outfile = os.path.splitext(infile)[0] + "m.jpg"
+			outfile1 = os.path.splitext(infile)[0] + "t.jpg"
+			if infile != outfile:
+				try:
+					out.save(outfile, "JPEG")
+					thumb.save(outfile1, "JPEG")
+				except IOError:
+					print "cannot create output for", infile
+			k.key = imgkey + "m.jpg"
+			k.set_contents_from_filename(os.path.join(dir_path, imgkey + "m.jpg"))
+			k.set_acl('public-read')
+			k.key = imgkey + "t.jpg"
+			k.set_contents_from_filename(os.path.join(dir_path, imgkey + "t.jpg"))
+			k.set_acl('public-read')		
+			params = urllib.urlencode({'student': 'armstrow', 'type': 'INFO', 'system': 'appserver','message': 'image processed: '+imgkey+', newHeight: '+str(height)+', newWidth: '+str(width)})
+			f = urllib.urlopen("http://imaj.lddi.org:8080/log/submit", params)
+			request = {}
+			request['imagekey'] = imgkey
+			request['imageheight'] = height
+			request['imagewidth'] = width
+			request['processeddate'] = curtime
+			m = RawMessage()
+			m.set_body(json.write(request))
+			q2 = sqsconn.get_queue('imageresult')
+			status = q2.write(m)
+			q.delete_message(item)
+		except IOError:
+			params = urllib.urlencode({'student': 'armstrow', 'type': 'Error', 'system': 'appserver','message': 'Error processing image: '+imgkey})
+			f = urllib.urlopen("http://imaj.lddi.org:8080/log/submit", params)
 	time.sleep(10)
 #
 

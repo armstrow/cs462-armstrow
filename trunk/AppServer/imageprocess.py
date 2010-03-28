@@ -37,7 +37,7 @@ while True:
 			try:
 				k.get_contents_to_filename(os.path.join(dir_path, "image.jpg"))
 				tryAgain = False
-			except boto.exception.S3ResponseError
+			except boto.exception.S3ResponseError:
 				tryAgain = True
 		infile = os.path.join(dir_path, "image.jpg")
 
